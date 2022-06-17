@@ -1,44 +1,36 @@
-import { StyleSheet, Text, View, TextInput, FlatList } from 'react-native';
-import Home from './src/components/Home';
-import data_json from './src/components/Data.json';
+import React, { useState } from 'react'
+import { FlatList, View, StyleSheet } from 'react-native'
+import data_json from './src/components/dataJson.json';
+import About from './src/components/About';
+import SearchBar from './src/components/SearchBar/SearchBar';
 
 const App = () => {
-  const fonks = ({ item }) => <Home dat={item}/>
-  const keyEX = (item) => item.id.toString();
+  const [list, setList] = useState(data_json);
+  const fonks = ({ item }) => <About idx={item}/>
+  const separator = () => <View style={Styles.separator}></View>
+  const search = (e) => {
+    const filterList = data_json.filter(idx => {
+      const userSearch = e.toLowerCase();
+      const searchTitle = idx.title.toLowerCase();
+  
+      return searchTitle.indexOf(userSearch) > -1;
 
-  return(
-    <View style={styles.container}>
-      <View style={styles.still_container}>
-        <Text style={styles.title}>PATIKASTORE</Text>
-        <TextInput placeholder='    Ara...' style={styles.input}></TextInput>
-      </View>
-      <FlatList numColumns={2} data={data_json} renderItem={fonks} keyExtractor={keyEX}></FlatList>
+    })
+    setList(filterList);
+  }
+  return (
+    <View>
+      <SearchBar newSearch={search}/>
+      <FlatList keyExtractor={(item) => item.id} data={list} renderItem={fonks} ItemSeparatorComponent={separator}></FlatList>
     </View>
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  title: {
-    color: '#800080',
-    fontWeight: 'bold',
-    fontSize: 34,
-  },
-  still_container: {
-    // alignItems: 'center'
-    margin: 15
-  },
-  input: {
-    width: 575,
-    height: 30,
-    backgroundColor: '#eee',
-    borderRadius: 10,
-    
-  }
+const Styles = StyleSheet.create({
+    separator: {
+      borderWidth: 1,
+      borderColor: '#EEEEEE'
+    }
 })
-
-
 
 export default App;
